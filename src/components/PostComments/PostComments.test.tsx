@@ -1,9 +1,31 @@
-import { render, screen } from '@testing-library/react';
-import App from './index';
+import { fireEvent, render, screen } from '@testing-library/react';
+import PostComment from '.';
 
-test('deve renderizar dois comentários', () => {
-render(<App />);
+describe('Teste para o componente PostComment', () => {
+    it('Deve renderizar o componente corretamente', () => {
+        render(<PostComment/>);
+        expect(screen.getByText('Comentar')).toBeInTheDocument();
+    });
 
-expect(screen.getByTestId('comentario-1')).toBeInTheDocument();
-expect(screen.getByTestId('comentario-2')).toBeInTheDocument();
+    it('Deve adicionar dois comentários', () => {
+        render(<PostComment/>);
+
+        // adiciona o primeiro comentário
+        fireEvent.change(screen.getByTestId('comment-textarea'), {
+            target: {
+                value: 'Comentário adicionado via testes',
+            }
+        });
+        fireEvent.click(screen.getByTestId('comment-button'));
+    
+        // adiciona o segundo comentário
+        fireEvent.change(screen.getByTestId('comment-textarea'), {
+            target: {
+                value: 'Segundo comentário adicionado via testes',
+            }
+        });
+        fireEvent.click(screen.getByTestId('comment-button'));
+
+        expect(screen.getAllByTestId('comment-element')).toHaveLength(2);
+    });
 });
